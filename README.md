@@ -1,5 +1,6 @@
 # YoutubeApi
-
+intellij gitlabで調べてもgithubしか出てこない；；
+よくわからずなんとなく設定いじってたけど動いてるからヨシ
 
 
 ## Getting started
