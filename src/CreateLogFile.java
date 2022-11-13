@@ -48,13 +48,11 @@ public class CreateLogFile {
             bw.newLine();
             logMap.forEach((key, value) -> {
                 try {
-                    System.out.println(("開始"));
                     bw.write(key);
                     value.forEach(comment -> {
                         try { bw.write("," + comment); } catch (IOException e) { e.printStackTrace(); }
                     });
                     bw.newLine();
-                    System.out.println("終了");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
