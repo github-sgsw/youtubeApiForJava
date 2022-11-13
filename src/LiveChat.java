@@ -23,17 +23,21 @@ public class LiveChat {
         this.videoId = videoId;
         this.chatId = chatId;
     }
-    private Optional<String> pageToken = Optional.ofNullable(null);
 
     public ArrayList<CommentDetailsModel> getChatInfo() {
         final String url = "https://www.googleapis.com/youtube/v3/liveChat/messages?";
         JsonNode jsonNode;
+        //１つ１つのコメントを格納するリスト
         ArrayList<CommentDetailsModel> cdmList = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
         var client = HttpClient.newHttpClient();
+        //初回読み込み時以降のコメント差分取得用
+        Optional<String> pageToken = Optional.empty();
+
         System.out.println("----- STATE GET LOG -----");
+
         while (Objects.equals(getLiveStates(), "live")) {
             try {
-                Thread.sleep(10000);
                 String params = "key=" + apiKey + "&" + "liveChatId=" + chatId + "&" + "part=id,snippet,authorDetails";
                 if (pageToken.isPresent()) {
                     params = params + "&pageToken=" + pageToken.get();
@@ -42,14 +46,15 @@ public class LiveChat {
                 var request = HttpRequest.newBuilder().uri(URI.create(url + params)).build();
                 var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                ObjectMapper mapper = new ObjectMapper();
                 jsonNode = mapper.readTree(response.body());
 
                 for (JsonNode json : jsonNode.get("items")) {
                    cdmList.add(mapper.convertValue(json, CommentDetailsModel.class));
                 }
+                // 10秒間次のコメントを待つ
+                Thread.sleep(10000);
 
-                this.pageToken = Optional.ofNullable(jsonNode.get("nextPageToken").asText());
+                pageToken = Optional.ofNullable(jsonNode.get("nextPageToken").asText());
 
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -61,6 +66,11 @@ public class LiveChat {
     }
 
     public String getLiveStates() {
+        /**
+         * ライブステータスを取得するメソッド
+         * update...予約中, live...配信中, none...配信終了
+         * @return 現在のライブステータスを返却します。
+         */
         String params = "key=" + this.apiKey + "&" + "id=" + this.videoId + "&" + "part=snippet";
         String url = "https://www.googleapis.com/youtube/v3/videos?";
         String liveStates = "";
