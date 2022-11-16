@@ -66,3 +66,4 @@ public class CreateLogFile {
         }
     }
 }
+//紐付いてるか確認
