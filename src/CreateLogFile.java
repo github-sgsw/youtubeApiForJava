@@ -3,6 +3,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.io.File;
 import java.io.FileWriter;
@@ -15,26 +16,19 @@ public class CreateLogFile {
     CreateLogFile(ArrayList<CommentDetailsModel> cdmList) {
         this.cdmList = cdmList;
     }
-/*
-    Consumer<CommentDetailsModel> toMap = i -> {
-        String user = i.getAuthorDetailsModel().getDisplayName();
-        String comment = i.getSnippet().getDisplayMessage();
-        if (!logMap.containsKey(user)) {
-            logMap.put(user.replaceAll(",", ""), new ArrayList<>());
-        }
-        logMap.get(user).add(comment.replaceAll(",", ""));
-        System.out.println(logMap.keySet());
-    };
-*/
+
     public HashMap<String, ArrayList<String> > createLogMap() {
         HashMap<String, ArrayList<String> > logMap = new HashMap<>();
+
         cdmList.forEach(i -> {
-            String user = i.getAuthorDetailsModel().getDisplayName();
-            String comment = i.getSnippet().getDisplayMessage();
-            if (!logMap.containsKey(user)) {
-                logMap.put(user.replaceAll(",", ""), new ArrayList<>());
+            var user = Optional.ofNullable(i.getAuthorDetailsModel().getDisplayName());
+            var comment = Optional.ofNullable(i.getSnippet().getDisplayMessage());
+
+            if (!logMap.containsKey(user.get())) {
+                logMap.put(user.get().replaceAll(",", ""), new ArrayList<>());
             }
-            logMap.get(user).add(comment.replaceAll(",", ""));
+
+            logMap.get(user).add(comment.orElse("deleteComment??").replaceAll(",", ""));
         });
 
         return logMap;

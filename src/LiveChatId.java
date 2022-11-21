@@ -7,11 +7,13 @@ import java.net.http.HttpResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * Youtube API reference
- * @link https://developers.google.com/youtube/v3/docs/videos/list
- */
 public class LiveChatId {
+    /**
+     * Youtube API reference
+     * https://developers.google.com/youtube/v3/docs/videos/list
+     * @param videoId ライブ配信のID
+     * @return ライブ配信のチャット欄のID
+     */
     private String apiKey;
     private String videoId;
     LiveChatId(String apiKey, String videoId) {
@@ -34,6 +36,7 @@ public class LiveChatId {
             chatId = jsonNode.get("items").get(0).get("liveStreamingDetails").get("activeLiveChatId").asText();
 
         } catch (IOException | InterruptedException e) {
+            System.out.println("対象のliveChatIdが取得できませんでした。ライブ配信が終了している可能性があります。");
             e.printStackTrace();
         }
 
