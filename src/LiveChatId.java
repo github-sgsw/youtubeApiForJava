@@ -11,7 +11,7 @@ public class LiveChatId {
     /**
      * Youtube API reference
      * https://developers.google.com/youtube/v3/docs/videos/list
-     * @param videoId ライブ配信のID
+     * @param videoId live中のチャンネルid  https://www.youtube.com/watch?v=*********** の***********のこと
      * @return ライブ配信のチャット欄のID
      */
     private String apiKey;
