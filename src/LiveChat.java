@@ -35,8 +35,8 @@ public class LiveChat {
         String params = "key=" + apiKey + "&liveChatId=" + chatId + "&part=id,snippet,authorDetails" + "&pageToken=";
 
         System.out.println("----- STATE GET LOG -----");
-        int cnt = 0;
-        while (cnt < 10/* Objects.equals(getLiveStates(), "live" */) {
+
+        while (Objects.equals(getLiveStates(), "live")) {
             try {
                 var request = HttpRequest.newBuilder().uri(URI.create(url + params + pageToken)).build();
                 var response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -50,7 +50,7 @@ public class LiveChat {
                 Thread.sleep(5000);
 
                 pageToken = Optional.ofNullable(jsonNode.get("nextPageToken").asText()).orElse("");
-                cnt++;
+
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
