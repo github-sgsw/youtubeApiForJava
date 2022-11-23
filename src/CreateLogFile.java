@@ -28,7 +28,7 @@ public class CreateLogFile {
                 logMap.put(user.get().replaceAll(",", ""), new ArrayList<>());
             }
 
-            logMap.get(user).add(comment.orElse("deleteComment??").replaceAll(",", ""));
+            logMap.get(user.get()).add(comment.orElse("deleteComment??").replaceAll(",", ""));
         });
 
         return logMap;
