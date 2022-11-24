@@ -1,14 +1,13 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class CreateLogFile {
     private ArrayList<CommentDetailsModel> cdmList;
@@ -16,6 +15,12 @@ public class CreateLogFile {
     CreateLogFile(ArrayList<CommentDetailsModel> cdmList) {
         this.cdmList = cdmList;
     }
+
+    Collector<CommentDetailsModel, ?, Map<String, List<String>>> toMap = Collectors.groupingBy(cdModel ->
+            cdModel.getAuthorDetailsModel().getDisplayName(),
+            HashMap::new,
+            Collectors.mapping(cdModel -> cdModel.getSnippet().getDisplayMessage(), Collectors.toList())
+    );
 
     public HashMap<String, ArrayList<String> > createLogMap() {
         HashMap<String, ArrayList<String> > logMap = new HashMap<>();
