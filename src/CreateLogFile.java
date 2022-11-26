@@ -1,14 +1,13 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class CreateLogFile {
     private ArrayList<CommentDetailsModel> cdmList;
@@ -17,24 +16,21 @@ public class CreateLogFile {
         this.cdmList = cdmList;
     }
 
-    public HashMap<String, ArrayList<String> > createLogMap() {
-        HashMap<String, ArrayList<String> > logMap = new HashMap<>();
+    /**
+     * Map生成するときにreplaseAllかまして名前とコメントにあるコンマ消す
+     * if, else、containsKeyでうんぬんかんぬんやってたけどたった4行でできた
+     */
+    Collector<CommentDetailsModel, ?, Map<String, List<String>>> toMap = Collectors.groupingBy(cdModel ->
+            cdModel.getAuthorDetailsModel().getDisplayName(),
+            HashMap::new,
+            Collectors.mapping(cdModel -> cdModel.getSnippet().getDisplayMessage(), Collectors.toList())
+    );
 
-        cdmList.forEach(i -> {
-            var user = Optional.ofNullable(i.getAuthorDetailsModel().getDisplayName());
-            var comment = Optional.ofNullable(i.getSnippet().getDisplayMessage());
-
-            if (!logMap.containsKey(user.get())) {
-                logMap.put(user.get().replaceAll(",", ""), new ArrayList<>());
-            }
-
-            logMap.get(user.get()).add(comment.orElse("deleteComment??").replaceAll(",", ""));
-        });
-
-        return logMap;
+    public Map<String, List<String> > createLogMap() {
+        return cdmList.stream().collect(toMap);
     }
 
-    public void createCsvFile(HashMap<String, ArrayList<String>> logMap) {
+    public void createCsvFile(Map<String, List<String>> logMap) {
         File file = new File("C:\\Users\\p20pr\\Documents\\配信ログ\\" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-M-dd")) + "_配信コメント.csv");
         try{
             BufferedWriter bw = new BufferedWriter(new FileWriter(file));
