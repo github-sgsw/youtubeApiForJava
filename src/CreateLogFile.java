@@ -19,11 +19,13 @@ public class CreateLogFile {
     /**
      * Map生成するときにreplaseAllかまして名前とコメントにあるコンマ消す
      * if, else、containsKeyでうんぬんかんぬんやってたけどたった4行でできた
+     * コメント書くだけ書いてreplace実装していなかった;;
+     * 他の機能もろもろ追加したらcsvべた書きじゃなくてライブラリ使ってやる
      */
     Collector<CommentDetailsModel, ?, Map<String, List<String>>> toMap = Collectors.groupingBy(cdModel ->
-            cdModel.getAuthorDetailsModel().getDisplayName(),
+            cdModel.getAuthorDetailsModel().getDisplayName().replaceAll(",", ""),
             HashMap::new,
-            Collectors.mapping(cdModel -> cdModel.getSnippet().getDisplayMessage(), Collectors.toList())
+            Collectors.mapping(cdModel -> cdModel.getSnippet().getDisplayMessage().replaceAll(",", ""), Collectors.toList())
     );
 
     public Map<String, List<String> > createLogMap() {
