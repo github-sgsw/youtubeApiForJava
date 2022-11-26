@@ -16,30 +16,21 @@ public class CreateLogFile {
         this.cdmList = cdmList;
     }
 
+    /**
+     * Map生成するときにreplaseAllかまして名前とコメントにあるコンマ消す
+     * if, else、containsKeyでうんぬんかんぬんやってたけどたった4行でできた
+     */
     Collector<CommentDetailsModel, ?, Map<String, List<String>>> toMap = Collectors.groupingBy(cdModel ->
             cdModel.getAuthorDetailsModel().getDisplayName(),
             HashMap::new,
             Collectors.mapping(cdModel -> cdModel.getSnippet().getDisplayMessage(), Collectors.toList())
     );
 
-    public HashMap<String, ArrayList<String> > createLogMap() {
-        HashMap<String, ArrayList<String> > logMap = new HashMap<>();
-
-        cdmList.forEach(i -> {
-            var user = Optional.ofNullable(i.getAuthorDetailsModel().getDisplayName());
-            var comment = Optional.ofNullable(i.getSnippet().getDisplayMessage());
-
-            if (!logMap.containsKey(user.get())) {
-                logMap.put(user.get().replaceAll(",", ""), new ArrayList<>());
-            }
-
-            logMap.get(user.get()).add(comment.orElse("deleteComment??").replaceAll(",", ""));
-        });
-
-        return logMap;
+    public Map<String, List<String> > createLogMap() {
+        return cdmList.stream().collect(toMap);
     }
 
-    public void createCsvFile(HashMap<String, ArrayList<String>> logMap) {
+    public void createCsvFile(Map<String, List<String>> logMap) {
         File file = new File("C:\\Users\\p20pr\\Documents\\配信ログ\\" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-M-dd")) + "_配信コメント.csv");
         try{
             BufferedWriter bw = new BufferedWriter(new FileWriter(file));
