@@ -3,6 +3,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +24,8 @@ public class LiveChatId {
 
     public String getChatId() {
         String chatId = "";
-        String params = "key=" + this.apiKey + "&" + "id=" + this.videoId + "&" + "part=liveStreamingDetails";
+        String params = "key=" + this.apiKey + "&id=" + this.videoId + "&part=liveStreamingDetails";
+
         try {
             var client = HttpClient.newHttpClient();
             String url = "https://www.googleapis.com/youtube/v3/videos?";
@@ -33,10 +35,15 @@ public class LiveChatId {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(response.body());
 
+            // videoIDが取得できなかった場合プログラム終了
+            if (!jsonNode.get("items").has(0)) {
+                System.out.println("chatIdが取得できませんでした");
+                System.exit(0);
+            }
+
             chatId = jsonNode.get("items").get(0).get("liveStreamingDetails").get("activeLiveChatId").asText();
 
         } catch (IOException | InterruptedException e) {
-            System.out.println("対象のliveChatIdが取得できませんでした。ライブ配信が終了している可能性があります。");
             e.printStackTrace();
         }
 
