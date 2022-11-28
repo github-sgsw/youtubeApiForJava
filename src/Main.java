@@ -1,8 +1,13 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         final String apiKey = "AIzaSyDXA3tm85n2YcvL3RRCdXRZ4R6pHTh0FJU";
+
         // live中のチャンネルid  https://www.youtube.com/watch?v=*********** の***********のこと
-        final String videoId = "6l9Kt0vokUo";
+        System.out.print("videoId -->  ");
+        String videoId = sc.next();
 
         LiveChatId liveChatId = new LiveChatId(apiKey, videoId);
         LiveChat liveChat = new LiveChat(apiKey, videoId, liveChatId.getChatId());
