@@ -4,6 +4,10 @@ plugins {
     id 'idea'
 }
 
+run {
+    standardInput = System.in
+}
+
 repositories {
     mavenCentral()
 }
