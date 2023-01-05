@@ -1,2 +1,5 @@
 out/*
-*.class
+.gradle/*
+gradle/*
+.idea/*
+build/*
