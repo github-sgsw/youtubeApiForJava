@@ -17,7 +17,7 @@ public class YoutubeSearchResult {
     ObjectMapper mapper = new ObjectMapper();
     HashMap<String, String> resultInfo = new HashMap<>();
 
-    public void requestApi() {
+    public HashMap requestApi() {
         System.out.print("検索ワード -->  ");
         String searchQuery = sc.next();
         searchQuery = searchQuery.replaceAll(" |　", "+");
@@ -38,14 +38,17 @@ public class YoutubeSearchResult {
             for (JsonNode json : jsonNode.get("items")) {
                 resultInfo.put(json.get("id").get("videoId").asText(), json.get("snippet").get("title").asText());
             }
+
             for (String key : resultInfo.keySet()) {
                 System.out.println("id -> " + key + "title -> " + resultInfo.get(key));
             }
+
         } catch(IOException | InterruptedException e) {
             e.printStackTrace();
         }
-    }
 
+        return resultInfo;
+    }
 }
 
 // https://www.googleapis.com/youtube/v3/search?key=AIzaSyDXA3tm85n2YcvL3RRCdXRZ4R6pHTh0FJU&type=video&part=snippet&order=viewCount&maxResults=5&q=
