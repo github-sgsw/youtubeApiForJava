@@ -2,8 +2,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        YoutubeSearchResult test = new YoutubeSearchResult();
-        test.requestApi();
+        SeleniumPlayYoutube test = new SeleniumPlayYoutube();
+        test.createDriver();
         /*
         Scanner sc = new Scanner(System.in);
         final String apiKey = "AIzaSyDXA3tm85n2YcvL3RRCdXRZ4R6pHTh0FJU";
@@ -22,4 +22,3 @@ public class Main {
 
     }
 }
-// gitコマンド自分で試して理解深めたい　12345

@@ -16,11 +16,7 @@ application {
     mainClassName = 'Main'
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-//compileJava.options.encoding = 'UTF-8'
+compileJava.options.encoding = 'UTF-8'
 
 dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
@@ -29,15 +25,10 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.14.0'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.0'
+
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver
     implementation group: 'org.seleniumhq.selenium', name: 'selenium-chrome-driver', version: '4.7.2'
+
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.7.2'
-}
-
-task hello {
-    doLast {
-        println 'Hello Gradle'
-    }
-    
 }

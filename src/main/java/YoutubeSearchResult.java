@@ -15,9 +15,9 @@ public class YoutubeSearchResult {
     Scanner sc = new Scanner(System.in);
     JsonNode jsonNode;
     ObjectMapper mapper = new ObjectMapper();
-    HashMap<String, String> resultInfo = new HashMap<>();
+    //HashMap<String, String> resultInfo = new HashMap<>();
 
-    public HashMap requestApi() {
+    public void requestApi() {
         System.out.print("検索ワード -->  ");
         String searchQuery = sc.next();
         searchQuery = searchQuery.replaceAll(" |　", "+");
@@ -36,19 +36,21 @@ public class YoutubeSearchResult {
             jsonNode = mapper.readTree(response.body());
 
             for (JsonNode json : jsonNode.get("items")) {
-                resultInfo.put(json.get("id").get("videoId").asText(), json.get("snippet").get("title").asText());
+                String id = json.get("id").get("videoId").asText();
+                String title = json.get("snippet").get("title").asText();
+                System.out.println("id -> " + id + "\n" +  "title -> " + title);
+                //resultInfo.put(id, title);
             }
-
-            for (String key : resultInfo.keySet()) {
-                System.out.println("id -> " + key + "title -> " + resultInfo.get(key));
-            }
-
         } catch(IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        return resultInfo;
+        //return resultInfo;
     }
 }
+/**
+ * とりあえずなんとなくmapに格納したけど
+ * コンソールに表示させたidコピペしてchromeDriver起動するから格納処理いらんくね感でできた；；
+ */
 
 // https://www.googleapis.com/youtube/v3/search?key=AIzaSyDXA3tm85n2YcvL3RRCdXRZ4R6pHTh0FJU&type=video&part=snippet&order=viewCount&maxResults=5&q=
