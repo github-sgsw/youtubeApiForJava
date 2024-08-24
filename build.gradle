@@ -31,5 +31,4 @@ task hello {
     doLast {
         println 'Hello Gradle'
     }
-    
 }
