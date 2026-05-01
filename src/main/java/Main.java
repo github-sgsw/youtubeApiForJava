@@ -27,10 +27,24 @@ public class Main {
         String videoId = sc.next();
 
         LiveChatId liveChatId = new LiveChatId(apiKey, videoId);
-        LiveChat liveChat = new LiveChat(apiKey, videoId, liveChatId.getChatId());
-        CreateLogFile createLogFile = new CreateLogFile(liveChat.getChatInfo());
-
-        createLogFile.createCsvFile(createLogFile.createLogMap());
+        String chatId = liveChatId.getChatId();
+        if (chatId == null || chatId.isEmpty()) {
+            System.out.println("有効なchatIdが取得できませんでした。配信がライブ中か、videoIdが正しいか確認してください。");
+            return;
+        }
+        LiveChat liveChat = new LiveChat(apiKey, videoId, chatId);
+        try (CreateLogFile createLogFile = new CreateLogFile()) {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    createLogFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }));
+            liveChat.getChatInfo(createLogFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }

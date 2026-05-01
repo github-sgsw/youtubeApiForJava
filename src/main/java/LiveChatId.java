@@ -3,10 +3,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Optional;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 public class LiveChatId {
     /**
@@ -35,13 +34,20 @@ public class LiveChatId {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(response.body());
 
-            // videoIDが取得できなかった場合プログラム終了
-            if (!jsonNode.get("items").has(0)) {
+            // videoIDが取得できなかった場合は空文字を返す
+            JsonNode items = jsonNode.get("items");
+            if (items == null || !items.has(0)) {
                 System.out.println("chatIdが取得できませんでした");
-                System.exit(0);
+                return "";
             }
 
-            chatId = jsonNode.get("items").get(0).get("liveStreamingDetails").get("activeLiveChatId").asText();
+            JsonNode liveStreamingDetails = items.get(0).get("liveStreamingDetails");
+            if (liveStreamingDetails == null || liveStreamingDetails.get("activeLiveChatId") == null) {
+                System.out.println("activeLiveChatIdが取得できませんでした");
+                return "";
+            }
+
+            chatId = liveStreamingDetails.get("activeLiveChatId").stringValue();
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

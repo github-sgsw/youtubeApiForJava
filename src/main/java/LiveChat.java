@@ -5,8 +5,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Youtube API reference
@@ -23,11 +23,9 @@ public class LiveChat {
         this.chatId = chatId;
     }
 
-    public ArrayList<CommentDetailsModel> getChatInfo() {
+    public void getChatInfo(CreateLogFile createLogFile) {
         final String url = "https://www.googleapis.com/youtube/v3/liveChat/messages?";
         JsonNode jsonNode;
-        //１つ１つのコメントを格納するリスト
-        ArrayList<CommentDetailsModel> cdmList = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         var client = HttpClient.newHttpClient();
         //初回読み込み時以降のコメント差分取得用
@@ -43,21 +41,27 @@ public class LiveChat {
 
                 jsonNode = mapper.readTree(response.body());
 
-                for (JsonNode json : jsonNode.get("items")) {
-                   cdmList.add(mapper.convertValue(json, CommentDetailsModel.class));
+                JsonNode items = jsonNode.get("items");
+                if (items != null) {
+                    for (JsonNode json : items) {
+                        createLogFile.append(mapper.convertValue(json, CommentDetailsModel.class));
+                    }
                 }
                 // 5秒間次のコメントを待つ
                 Thread.sleep(5000);
 
-                pageToken = Optional.ofNullable(jsonNode.get("nextPageToken").asText()).orElse("");
+                pageToken = Optional.ofNullable(jsonNode.get("nextPageToken")).map(JsonNode::stringValue).orElse("");
 
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
+                break;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                break;
             }
         }
         System.out.println("----- FINISH GET LOG -----");
-
-        return cdmList;
     }
 
     public String getLiveStates() {
@@ -77,7 +81,16 @@ public class LiveChat {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(response.body());
 
-            liveStates = jsonNode.get("items").get(0).get("snippet").get("liveBroadcastContent").asText();
+            JsonNode items = jsonNode.get("items");
+            if (items == null || !items.has(0) || items.get(0) == null) {
+                return "none"; // no items -> treat as not live
+            }
+            JsonNode snippet = items.get(0).get("snippet");
+            if (snippet == null) {
+                return "none";
+            }
+            JsonNode liveContent = snippet.get("liveBroadcastContent");
+            liveStates = liveContent != null ? liveContent.stringValue() : "none";
 
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
