@@ -1,14 +1,11 @@
-# YoutubeApi
-intellij gitlabで調べてもgithubしか出てこない；；
-よくわからずなんとなく設定いじってたけど動いてるからヨシ
+新卒の頃に勉強で作ったyoutube関連アプリケーション  
+右も左も分からない時にAPIキー普通にコミットしてプライベートリポジトリにしていた。  
+キーをローテーションしたため、パブリックリポジトリへ機能を追加して復活
 
-## 参考にしたサイト
-一連の流れ python頑張って読み解いた https://note.com/or_ele/n/n5fc139ff3f06 <br>
-YoutubeDetaApi https://developers.google.com/youtube/v3/docs <br>
-YoutubeStreamApi https://developers.google.com/youtube/v3/live/getting-started
-
-### 今後
-- コメントのjsonデータをデシリアライズ？するときの流れもうちょいなんとかする
-- list形式の全コメントマップにしたりマップをcsvに出力するところもっとうまくできそうだから頑張る
-- 検索して動画再生する処理やりたい(欲言えば広告スキップとかも
-)
+利用方法
+google cloude で apiキーを取得後、resourceに.envファイルとして保存
+```
+youtubeApiKey=**********
+```
+gradlew run で実行。  
+youtubeでライブ配信中のidを標準入力から入力
