@@ -1,16 +1,28 @@
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CommentDetailsModel {
-    CommentDetailsModel() { }
-    private SnippetModel snippet;
-    private AuthorDetailsModel authorDetails;
+  CommentDetailsModel() {
+  }
 
-    public SnippetModel getSnippet() { return snippet; }
-    public AuthorDetailsModel getAuthorDetailsModel() { return authorDetails; }
+  private SnippetModel snippet;
+  private AuthorDetailsModel authorDetails;
 
-    public void setSnippet(SnippetModel snippet) { this.snippet = snippet; }
-    public void setAuthorDetails(AuthorDetailsModel authorDetails) { this.authorDetails = authorDetails; }
+  public SnippetModel getSnippet() {
+    return snippet;
+  }
+
+  public AuthorDetailsModel getAuthorDetailsModel() {
+    return authorDetails;
+  }
+
+  public void setSnippet(SnippetModel snippet) {
+    this.snippet = snippet;
+  }
+
+  public void setAuthorDetails(AuthorDetailsModel authorDetails) {
+    this.authorDetails = authorDetails;
+  }
 
 }
 
